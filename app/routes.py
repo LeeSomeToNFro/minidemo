@@ -1,7 +1,7 @@
 from app import app
 from flask import request,render_template
 from app.gameplay import Game,deck_pool
-init_deck=[]
+init_deck=[1,2,1,2,1,2,1,2]
 game = Game(deck_pool(),init_deck)
 
 @app.route('/')
@@ -11,17 +11,20 @@ def test():
 @app.route('/game',methods=['GET','POST'])
 def gameplay():
     global game
+    #print(game.deck_hand)
     if request.method=='GET':
         game.refresh(end_round=True)
         return render_template('game.html',game=game)
     
     elif request.method=="POST":
         end_round = request.form.getlist('end')
-        card_spell = request.form.getlist('card_id')
+        card_spell = request.form.getlist('card_spell')
+        #print(end_round)
+        #print(card_spell)
         if len(end_round)>0:
             game.refresh(end_round=True)
         else:
-            game.refresh(card_spell=card_spell)
+            game.refresh(card_spell=int(card_spell[0]))
         
         return render_template('game.html',game=game)
 
