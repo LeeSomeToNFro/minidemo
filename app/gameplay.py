@@ -1,20 +1,13 @@
-from app.static.STATIC import cards as card_list
-from app.static.models import Card
+from app.static.STATIC import generate_card_list,deck_pool,init_deck
 import random
-
-def deck_pool():
-
-    return [1,2,1,2,1,2,1,2]
-
-def build_card_list(listid):
 
 
 class Game:
 
     def __init__(self):
-        self.deck_pool = deck_pool
-        self.deck = init_deck
-
+        self.deck_pool = Deck(card_list=generate_card_list(deck_pool()))
+        self.deck = Deck(card_list=generate_card_list(init_deck()))
+        self.deck.shuffle()
         self.round=0
 
         #----资源-----
@@ -45,33 +38,31 @@ class Game:
 
     def draw_card(self,num):
         redraw = False
-        if not num<len(self.deck):
-            num = len(self.deck)
+        if not num<self.deck.length():
+            num = self.deck.length()
             redraw = True
         for i in range(num):
-            card = card_list()[self.deck[0]]
-            desp = "["+card[0]+"]"+card[1]+'-'+card[2]
-            self.deck_hand.append({'hand_id':0,"card_id":self.deck[0],"description":desp})
-            print("player draw card-ID:"+str(self.deck[0]))
-            del self.deck[0]
-        self.reindex_hand()
+            #card = card_list()[self.deck.card_list[0]]
+            #desp = "["+card[0]+"]"+card[1]+'-'+card[2]
+            self.deck_hand.append(self.deck.card_list[0])
+            print("player draw card-ID:"+str(self.deck.card_list[0].name))
+            self.deck.draw(0)
         if redraw:
             self.deck = self.deck_grave
-            random.shuffle(self.deck)
-            self.deck_grave = []       
+            self.deck.shuffle()
+            self.deck_grave = Deck()      
     
     def spell_card(self,hand_card_id):
-        card_id=self.deck_hand[hand_card_id]["card_id"]
-        print("player used card-ID:"+str(card_id))
-        rc = card_list()[card_id][3]
+        card=self.deck_hand.card_list[hand_card_id]["card"]
+        print("player used card-ID:"+str(card.name))
+        rc = card.r_stock
         self.stock_coal += rc[0]
         self.stock_wood += rc[1]
         self.stock_steel += rc[2]
         self.stock_food += rc[3]
 
-        self.deck_grave.append(card_id)
-        del self.deck_hand[hand_card_id]
-        self.reindex_hand()
+        self.deck_grave.append(card)
+        self.deck_hand.draw(hand_card_id)
 
     def apply_rc(self,rc_stock=[0,0,0,0],rc_capacity=[0,0,0,0],rc_consum=[0,0,0,0],rc_prod=[0,0,0,0]):
         self.stock_coal+=rc_stock[0]
@@ -118,6 +109,8 @@ class Deck:
         del self.card_list[index]
     def shuffle(self):
         random.shuffle(self.card_list)
+    def length(self):
+        return len(self.card_list)
 
 class Hands:
     def __init__(self,card_list=[]):

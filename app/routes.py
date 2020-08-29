@@ -1,8 +1,8 @@
 from app import app
 from flask import request,render_template
 from app.gameplay import Game,deck_pool
-init_deck=[1,2,1,2,1,2,1,2]
-game = Game(deck_pool(),init_deck)
+
+game = Game()
 
 @app.route('/')
 def test():
