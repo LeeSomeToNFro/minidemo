@@ -21,7 +21,9 @@
             <input type="submit" class="btn btn-default" value="打出该卡"/><br>
             {% for card in game.deck_hand.card_list %}
             <label><input name="card_spell" type="radio" value={{card.index}}>
-                {{card.card.description}}</label><br>
+                {{card.card.human}}-{{card.card.human_rounds}}[{{card.card.name}}]{{card.card.description}}
+                {% if card.card.counts>0 %}(剩余次数:{{card.card.counts}}){% endif %}
+            </label><br>
             {% endfor %}
         </form>
         <form action="" method="POST">
