@@ -42,6 +42,20 @@ class City:
             result.append(temp)
         return result
 
+class Building:
+    def __init__(self,id,human,human_rounds=1,btype="null",name="null",description="null",effect_id=[],effect_param=[],bounding_cards=[],bounding_num=[]):
+        self.id=id
+        self.human=human
+        self.human_rounds=human_rounds
+        self.type=btype
+        self.name=name
+        self.description=description
+        self.effect_param=effect_param
+        self.effect_id=effect_id
+        self.bounding_cards=bounding_cards
+        self.bounding_num=bounding_num
+
+        
 
 
         
